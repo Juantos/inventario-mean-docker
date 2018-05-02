@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{accion.texto}} categoría</h3>
+</div>
+<form class="form-horizontal" method="post" id="contact_form">
+    <div class="modal-body">
+        <input name="nueva_cat" ng-model="nuevo.categoria" placeholder="Nombre de la categoría" class="form-control" type="text">
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" ng-click="ok()">Aceptar</button>
+        <button class="btn btn-warning" ng-click="no()">Cancelar</button>
+    </div>
+</form>

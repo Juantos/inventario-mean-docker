@@ -1,0 +1,21 @@
+{
+  "name": "crud-0.1",
+  "version": "0.0.1",
+  "description": "CRUD con datos de inventario",
+  "main": "server.js",
+  "author": "Juan Toscano",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.13.0",
+    "mongodb": "^3.0.6",
+    "mongoose": "^5.0.0",
+    "mongoskin": "^2.1.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.17.2"
+  },
+  "scripts": {
+    "dev": "nodemon server.js"
+  }
+}

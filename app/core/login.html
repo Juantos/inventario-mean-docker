@@ -1,0 +1,51 @@
+<html>
+
+<head>
+    <title>Login</title>
+    <script type="text/javascript" src="public/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="public/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="public/lib/angular/angular.min.js"></script>
+    <link rel="stylesheet" type="text/css" href ="public/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="public/css/general.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-offset-4 col-md-4" id="box">
+                <h2>Iniciar sesión</h2>
+                <hr>
+                <form class="form-horizontal" action="/categorias" method="post" id="contact_form">
+                    <fieldset>
+                        <!--Input usuario-->
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input name="usr" placeholder="Usuario" class="form-control" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <!--Input contraseña-->
+                        <div class="form-group">
+
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input name="pwd" placeholder="Contraseña" class="form-control" type="password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-md btn-primary pull-right">Aceptar</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
