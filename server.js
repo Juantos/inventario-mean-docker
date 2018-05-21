@@ -4,6 +4,7 @@
 const express = require('express')
 const bodyParser = require('body-parser') //bodyParser permite jugar con los datos de los formularios
 const app = express()
+var path = require('path');
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -41,9 +42,12 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/app/core/login.html')
 })
 
-
-/*-------------FUNCIONES CRUD-------------*/
-
+//Entrar en categoría
+app.get('/categorias/*', (req, res) => {
+    res.sendFile(__dirname + '/app/categorias/lista_categoria.html')
+    //res.redirect("https://www.google.com")
+})
+//Login
 app.post('/categorias', (req, res) => {
     var usr = req.body.usr
     var pwd = req.body.pwr //devuelve undefined
@@ -52,6 +56,11 @@ app.post('/categorias', (req, res) => {
     res.sendFile(__dirname + '/app/categorias/categorias.html')
 })
 
+
+/*-------------FUNCIONES CRUD LISTA CATEGORIAS-------------*/
+
+
+//Devuelve la lista de categorías
 app.get('/lista_categorias', (req, res) => {
     db.collection(cat).find().toArray((err, jotason) => {
         if (err) return console.log(err)
@@ -62,15 +71,15 @@ app.get('/lista_categorias', (req, res) => {
 //Nueva categoría
 app.post('/n_cat', (req, res, next) => {
     db.collection(cat).save({
-        "id": cat + "." + arreglar(req.body.nombre),
+        "id": arreglar(req.body.nombre),
         "nombre": req.body.nombre
-    }, (err, result) =>{
+    }, (err, result) => {
         if (err) return console.log(err)
     })
 })
 
+//Borrar categoría
 app.post('/b_cat', (req, res, next) => {
-    console.log(req)
     db.collection(cat).deleteOne({
         _id: new mongodb.ObjectID(req.body._id)
     }, (err, jotason) => {
@@ -81,49 +90,99 @@ app.post('/b_cat', (req, res, next) => {
     })*/
 })
 
+//Editar categoría
 app.post('/e_cat', (req, res, next) => {
     db.collection(cat).updateOne({
         _id: new mongodb.ObjectID(req.body._id)
-    }, {"nombre": req.body.nombre, "id": arreglar(req.body.nombre)}, (err, jotason) => {
+    }, {
+        "nombre": req.body.nombre,
+        "id": arreglar(req.body.nombre)
+    }, (err, jotason) => {
         if (err) return console.log(err)
     })
 })
 
-//C - Create / Añadir documento
-app.post('/anyadirDocumento', (req, res, next) => {
-    db.collection('formulario1').save(req.body, (err, result) => {
+
+/*-------------FUNCIONES CRUD LISTA CATEGORIA-------------*/
+
+
+//Devuelve la lista de categorías
+app.post('/lista_categoria', (req, res) => {
+    db.collection(cat+"."+req.body.id).find().toArray((err, jotason) => {
         if (err) return console.log(err)
-        res.redirect('/') //para no dejar estancado al usuario
+        res.status(200).json(jotason)
     })
 })
 
-//R - Read / Leer documento
-app.post('/leerDocumento', (req, res, next) => {
-    db.collection('formulario1').findOne({
-        _id: new mongodb.ObjectID(req.body._id)
+//Devuelve el nombre de la categoría basándose en la URL actual de la página
+app.post('/nombra_categoria', (req, res, next) => {
+    db.collection(cat).findOne({
+        id: req.body.id
     }, (err, jotason) => {
         if (err) return console.log(err)
         res.status(200).json(jotason)
     })
 })
 
-//U - Update / Actualizar documento
-app.post('/editarDocumento', (req, res, next) => {
-    db.collection('formulario1').updateOne({
+//Devuelve campos de la categoría seleccionada
+app.post('/lista_campos', (req, res, next) => {
+    db.collection(cat+"."+req.body.id).findOne({
         _id: new mongodb.ObjectID(req.body._id)
-    }, req.body, (err, jotason) => {
+    }, {'_id': 0, 'id_cat': 0}, (err, jotason) => {
+        if (err) return console.log(err)
+        res.status(200).json(jotason)
+    })
+})
+
+app.post('/creaObjeto', (req, res, next) => {
+    db.collection(cat+"."+req.body.id_cat).save(req.body, (err, result) => {
         if (err) return console.log(err)
     })
 })
 
-//D - Delete / Borrar documento
-app.post('/borrarDocumento', (req, res, next) => {
-    db.collection('formulario1').deleteOne({
-        _id: new mongodb.ObjectID(req.body._id)
+app.post('/borraObjeto', (req, res, next) => {
+    console.log(req.body)
+     db.collection(cat+"."+req.body.cat).deleteOne({
+        ID: req.body.id
     }, (err, jotason) => {
         if (err) return console.log(err)
     })
 })
+
+//Nueva categoría
+/*app.post('/n_cat', (req, res, next) => {
+    db.collection(cat).save({
+        "id": arreglar(req.body.nombre),
+        "nombre": req.body.nombre
+    }, (err, result) => {
+        if (err) return console.log(err)
+    })
+})*/
+
+//Borrar categoría
+/*app.post('/b_cat', (req, res, next) => {
+    console.log(req)
+    db.collection(cat).deleteOne({
+        _id: new mongodb.ObjectID(req.body._id)
+    }, (err, jotason) => {
+        if (err) return console.log(err)
+    })
+})*/
+
+//Editar categoría
+/*app.post('/e_cat', (req, res, next) => {
+    db.collection(cat).updateOne({
+        _id: new mongodb.ObjectID(req.body._id)
+    }, {
+        "nombre": req.body.nombre,
+        "id": arreglar(req.body.nombre)
+    }, (err, jotason) => {
+        if (err) return console.log(err)
+    })
+})*/
+
+//R - Read / Leer documento
+
 
 function arreglar(cad) {
     return cad.toLowerCase().split(' ').join('_').replace(/[{()}]/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\W/g, '')

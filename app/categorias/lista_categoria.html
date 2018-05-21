@@ -1,0 +1,207 @@
+<html ng-app="app" ng-controller="cuerpo">
+
+<head>
+    <script type="text/javascript" src="../public/lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../public/lib/angular/angular.js"></script>
+    <script type="text/javascript" src="../public/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script type="text/javascript" src="../public/script/lista_categoria.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../public/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/general.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/categorias.css">
+
+    <title>{{n_col}}</title>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Activate tooltip
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Select/Deselect checkboxes
+            var checkbox = $('table tbody input[type="checkbox"]');
+            $("#selectAll").click(function() {
+                if (this.checked) {
+                    checkbox.each(function() {
+                        this.checked = true;
+                    });
+                } else {
+                    checkbox.each(function() {
+                        this.checked = false;
+                    });
+                }
+            });
+            checkbox.click(function() {
+                if (!this.checked) {
+                    $("#selectAll").prop("checked", false);
+                }
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h2><b>{{n_col}}</b></h2>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="#creaElemento" class="btn btn-success" data-toggle="modal" data-backdrop="static"><i class="material-icons">&#xE147;</i> <span>Añadir elemento</span></a>
+                        <a href="#" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Eliminar elementos</span></a>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <span class="custom-checkbox">
+								<input type="checkbox" id="selectAll">
+								<label for="selectAll"></label>
+							</span>
+                        </th>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in datos">
+                        <td>
+                            <span class="custom-checkbox">
+								<input type="checkbox" id="checkbox1" name="options[]" value="1">
+								<label for="checkbox1"></label>
+							</span>
+                        </td>
+                        <td data-toggle="modal" data-target="#muestraElemento" ng-click="lista_campos(row._id, row.Nombre)" data-backdrop="static">{{row.Nombre}}</td>
+                        <td>
+                            <a href="#editaElemento" class="edit" data-toggle="modal" data-backdrop="static"><i class="material-icons" data-toggle="tooltip" title="Edit" ng-click="lista_campos(row._id, row.Nombre)">&#xE254;</i></a>
+                            <a href="#borraElemento" class="delete" data-toggle="modal" data-backdrop="static"><i class="material-icons" data-toggle="tooltip" title="Delete" ng-click="setObjetoID(row.ID, row.Nombre)">&#xE872;</i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="clearfix">
+                <div class="hint-text">Mostrando <b>1</b> de <b>1</b> entradas</div>
+                <ul class="pagination">
+                    <li class="page-item disabled"><a href="#">Anterior</a></li>
+                    <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                    <li class="page-item disabled"><a href="#" class="page-link">Siguiente</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Read Modal -->
+    <div id="muestraElemento" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">{{objeto.nombre}}</h4>
+                        <button type="button" class="close" data-dismiss="modal" ng-click="cancela_accion()" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div ng-repeat="(key, value) in n_campos">
+                                <label><b>{{key}}</b></label>
+                                <p>{{value}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Comprensible">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Modal -->
+    <div id="editaElemento" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">{{objeto.nombre}}</h4>
+                        <button type="button" class="close" data-dismiss="modal" ng-click="cancela_accion()" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div ng-repeat="(key, value) in n_campos">
+                                <label>{{key}}</label>
+                                <input type="text" class="form-control" ng-model="value" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancela_accion()" value="Cancelar">
+                        <input type="submit" class="btn btn-success" data-dismiss="modal" ng-click="accion_cat()" value="Actualizar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="borraElemento" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">{{objeto.nombre}}</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás segur@ de querer borrar el objeto <b>{{objeto.nombre}}</b>?</p>
+                        <p class="text-warning"><small>Esta acción no puede ser revertida</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-danger" data-dismiss="modal" ng-click="borraObjeto()" value="Eliminar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Modal -->
+    <div id="creaElemento" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">Añadir objeto a <b>{{n_col}}</b></h4>
+                        <button type="button" class="close" data-dismiss="modal" ng-click="cancela_accion()" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div>
+                                <label>{{objeto.campos.id}}</label>
+                                <input type="text" class="form-control" ng-model="objeto.nuevo.id" required>
+                                <label>{{objeto.campos.nombre}}</label>
+                                <input type="text" class="form-control" ng-model="objeto.nuevo.nombre" required>
+                                <label>{{objeto.campos.descripcion}}</label>
+                                <input type="text" class="form-control" ng-model="objeto.nuevo.descripcion" required>
+                                <label>{{objeto.campos.cantidad}}</label>
+                                <input type="text" class="form-control" ng-model="objeto.nuevo.cantidad" required>
+                                <label>{{objeto.campos.ubicacion}}</label>
+                                <input type="text" class="form-control" ng-model="objeto.nuevo.ubicacion" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancela_accion()" value="Cancelar">
+                        <input type="submit" class="btn btn-success" data-dismiss="modal" ng-click="creaObjeto()" value="Añadir">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
